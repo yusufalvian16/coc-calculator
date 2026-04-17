@@ -1,0 +1,1106 @@
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zapquake Calculator | COC Damage Calculator</title>
+
+  <!-- Favicons -->
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png" />
+  <link rel="manifest" href="/images/favicon/site.webmanifest" />
+  <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#bf00ff" />
+  <meta name="msapplication-TileColor" content="#9f00a7" />
+  <meta name="theme-color" content="#1a1a2e" />
+
+  <!-- Tailwind CSS via CDN Play -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { supercell: ['SupercellMagic', 'sans-serif'] },
+          colors: {
+            'coc-gold': '#f0c040',
+            'coc-blue': '#4a90d9',
+            'coc-brown': '#8b5e3c',
+            'coc-dark': '#1a1a2e',
+            'coc-card': '#16213e',
+            'coc-border': '#0f3460',
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Font Awesome -->
+  <script src="https://kit.fontawesome.com/e1acb8aa00.js" crossorigin="anonymous"></script>
+
+  <style>
+    /* Custom font */
+    @font-face {
+      font-family: 'SupercellMagic';
+      src: url('/fonts/SVN-SupercellMagic.otf') format('opentype');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    /* =====================================================
+       Bootstrap Compatibility Layer
+       These classes are used by JS backend files and must
+       remain functional without Bootstrap being loaded.
+    ===================================================== */
+    .d-none { display: none !important; }
+    .d-flex { display: flex !important; }
+    .d-inline-block { display: inline-block !important; }
+    .d-block { display: block !important; }
+    .flex-wrap { flex-wrap: wrap !important; }
+    .align-items-center { align-items: center !important; }
+    .justify-content-center { justify-content: center !important; }
+    .justify-content-end { justify-content: flex-end !important; }
+    .gap-2 { gap: 0.5rem !important; }
+    .gap-1 { gap: 0.25rem !important; }
+    .ms-3 { margin-left: 0.75rem !important; }
+    .me-1 { margin-right: 0.25rem !important; }
+    .mt-3 { margin-top: 0.75rem !important; }
+    .my-3 { margin-top: 0.75rem !important; margin-bottom: 0.75rem !important; }
+    .mb-0 { margin-bottom: 0 !important; }
+    .h5 { font-size: 1.25rem; font-weight: 600; }
+    .fs-5 { font-size: 1.25rem !important; }
+    .fw-bold { font-weight: 700 !important; }
+    .text-center { text-align: center !important; }
+    .col { flex: 1 0 0%; }
+    .col-3 { width: 25%; }
+    .col-4 { width: 33.333%; }
+    .col-9 { width: 75%; }
+    .col-8 { width: 66.666%; }
+    .col-sm-4 { width: 33.333%; }
+    .col-sm-8 { width: 66.666%; }
+    .row { display: flex; flex-wrap: wrap; }
+    .row-cols-1 > * { width: 100%; }
+    .gy-2 { row-gap: 0.5rem; }
+    .gx-1 { column-gap: 0.25rem; }
+    .gx-0 { column-gap: 0; }
+    .container-fluid { width: 100%; padding: 0 1rem; }
+    .collapse { display: none; }
+    .collapse.show { display: block; }
+    .p-3 { padding: 0.75rem !important; }
+    .shadow { box-shadow: 0 4px 6px -1px rgba(0,0,0,0.4), 0 2px 4px -1px rgba(0,0,0,0.3) !important; }
+
+    /* =====================================================
+       Custom CSS Classes used by JS backend
+    ===================================================== */
+
+    /* Object containers */
+    .object-container {
+      position: relative;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .object-container--epic {
+      border: 2px solid #9b59b6;
+      border-radius: 8px;
+      padding: 2px;
+    }
+    .object-container--immune {
+      opacity: 0.4;
+      filter: grayscale(100%);
+    }
+    .object-container--tall {
+      min-width: 60px;
+    }
+    .object-container--earthquake {
+      border: 2px solid #e67e22;
+      border-radius: 8px;
+      padding: 2px;
+    }
+    .object-container__header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: space-between;
+      z-index: 10;
+    }
+    .object-container__img {
+      width: 64px;
+      height: 64px;
+      object-fit: contain;
+    }
+
+    /* Overlays */
+    .overlay {
+      position: absolute;
+      z-index: 10;
+    }
+    .overlay--bottom-left {
+      bottom: 2px;
+      left: 2px;
+    }
+    .overlay--top-left {
+      top: 2px;
+      left: 2px;
+    }
+    .overlay--top-right {
+      top: 2px;
+      right: 2px;
+    }
+    .overlay__number {
+      background: rgba(0,0,0,0.7);
+      color: white;
+      font-size: 0.75rem;
+      font-weight: bold;
+      padding: 1px 4px;
+      border-radius: 3px;
+      min-width: 18px;
+      text-align: center;
+      line-height: 1.4;
+    }
+    .overlay__number--level-maxed { color: #f0c040; }
+    .overlay__number--spell-count {
+      background: rgba(0,0,0,0.75);
+      color: #f0c040;
+      font-size: 0.7rem;
+      font-weight: bold;
+      padding: 1px 3px;
+      border-radius: 3px;
+    }
+    .overlay__number--order {
+      background: rgba(0,0,0,0.75);
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: bold;
+      padding: 1px 3px;
+      border-radius: 3px;
+    }
+    .overlay__img img { width: 18px; height: 18px; }
+    .overlay--small .overlay__img img { width: 14px; height: 14px; }
+    .overlay--responsive .overlay__img img { width: 16px; height: 16px; }
+
+    /* Card styles */
+    .card-custom { border-radius: 8px; }
+    .card-custom__main {
+      background: #16213e;
+      border: 1px solid #0f3460;
+      color: #e2e8f0;
+    }
+    .card-custom__stat {
+      background: rgba(255,255,255,0.1);
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-size: 0.875rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .card-custom__object {
+      background: #1a1a2e;
+      border: 1px solid #0f3460;
+      border-radius: 8px;
+      padding: 12px;
+    }
+
+    /* Images */
+    .image { max-width: 100%; height: auto; }
+    .image--main { width: 64px; height: 64px; object-fit: contain; }
+
+    /* Status containers */
+    .status-container { display: flex; align-items: center; gap: 12px; }
+    .status-container__img { width: 80px; height: 80px; object-fit: contain; }
+    .status-container__text { font-size: 1rem; }
+    .status-container__text--success { color: #27ae60; font-weight: bold; }
+    .status-container__text--fail { color: #e74c3c; font-weight: bold; }
+    .status-container__img--empty-search { width: 120px; height: 120px; }
+
+    /* Slider */
+    .slider { width: 100%; cursor: pointer; accent-color: #4a90d9; }
+    .slider--theme { accent-color: #f0c040; }
+
+    /* Text colors */
+    .text--hp-full { color: #27ae60; }
+    .text--hp-low { color: #e74c3c; }
+    .text--level-maxed { color: #f0c040; }
+
+    /* Spell/equipment display in defense cards */
+    .spell-div { }
+    .equipment-div { }
+    .spell-main-display { }
+    .spell-display { }
+    .show-more-btn {
+      background: #374151;
+      color: #e2e8f0;
+      border: 1px solid #4b5563;
+      border-radius: 6px;
+      padding: 6px 14px;
+      cursor: pointer;
+      font-size: 0.875rem;
+      transition: background 0.2s;
+    }
+    .show-more-btn:hover { background: #4b5563; }
+    .collapse-btn { }
+
+    /* btn compatibility for JS-generated buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      border: 1px solid transparent;
+      transition: background 0.2s, border-color 0.2s;
+      text-decoration: none;
+    }
+    .btn-secondary {
+      background: #374151;
+      color: #e2e8f0;
+      border-color: #4b5563;
+    }
+    .btn-secondary:hover { background: #4b5563; }
+    .btn-primary {
+      background: #4a90d9;
+      color: #fff;
+      border-color: #3a7bc8;
+    }
+    .btn-primary:hover { background: #3a7bc8; }
+    .btn-success {
+      background: #27ae60;
+      color: #fff;
+      border-color: #219a52;
+    }
+    .btn-success:hover { background: #219a52; }
+
+    /* Scrollbar styling */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #1a1a2e; }
+    ::-webkit-scrollbar-thumb { background: #0f3460; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #4a90d9; }
+  </style>
+</head>
+
+<body class="bg-coc-dark text-slate-200 min-h-screen flex flex-col">
+
+  <!-- =====================================================
+       HEADER
+  ===================================================== -->
+  <header class="bg-coc-card border-b border-coc-border py-4 px-6 flex items-center justify-between flex-wrap gap-3">
+    <div class="flex items-center gap-3">
+      <h1 class="font-supercell text-2xl md:text-3xl leading-tight">
+        <span class="text-coc-blue">Zap</span><span class="text-coc-brown">Quake</span>
+        <span class="text-coc-gold"> Calculator</span>
+      </h1>
+    </div>
+    <!-- Language Switcher -->
+    <div class="flex items-center gap-2">
+      <label for="languageSelect" class="text-sm text-slate-400" data-i18n="language">Language</label>
+      <select
+        id="languageSelect"
+        class="bg-coc-dark border border-coc-border text-slate-200 rounded-md px-3 py-1.5 text-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-coc-blue"
+        aria-label="Language selector"
+        onchange="i18n.setLang(this.value)"
+      >
+        <option value="en">🇬🇧 English</option>
+        <option value="id">🇮🇩 Indonesia</option>
+      </select>
+    </div>
+  </header>
+
+  <!-- =====================================================
+       MAIN CONTENT
+  ===================================================== -->
+  <main class="flex-1 w-full max-w-screen-2xl mx-auto px-4 py-6">
+
+    <!-- ===== OFFENSE SECTION ===== -->
+    <section id="offenses" class="card-custom card-custom__main shadow p-6 mb-6">
+      <h2 class="text-center text-2xl font-bold text-coc-gold mb-4" data-i18n="selectOffenseLevel">Select Offense Level</h2>
+      <hr class="border-coc-border mb-6" />
+
+      <!-- SPELLS -->
+      <div class="mb-6">
+        <h3 class="text-center text-xl font-semibold text-coc-blue mb-4" data-i18n="spell">Spell</h3>
+
+        <!-- Spell Settings -->
+        <div class="mb-4">
+          <h4 class="font-semibold text-slate-300 mb-2" data-i18n="setting">Setting:</h4>
+          <div class="flex flex-wrap gap-2 mb-3">
+            <button
+              type="button"
+              value="max"
+              onclick="setAllSpellsLevel(this)"
+              class="bg-slate-700 hover:bg-slate-600 text-slate-200 border border-slate-500 rounded-md px-3 py-1.5 text-sm font-medium transition-colors"
+              aria-label="Set all spells to max level"
+              data-i18n-aria="setAllSpellsMax"
+            >
+              <span data-i18n="setAllSpellsMax">Set All Spells to Max Level</span>
+            </button>
+            <button
+              type="button"
+              value="min"
+              onclick="setAllSpellsLevel(this)"
+              class="bg-slate-700 hover:bg-slate-600 text-slate-200 border border-slate-500 rounded-md px-3 py-1.5 text-sm font-medium transition-colors"
+              aria-label="Set all spells to min level"
+            >
+              <span data-i18n="setAllSpellsMin">Set All Spells to Min Level</span>
+            </button>
+          </div>
+          <!-- Donated Lightning Checkbox -->
+          <div class="flex items-center gap-2">
+            <input
+              type="checkbox"
+              id="useDonatedLightning"
+              class="w-4 h-4 accent-coc-blue cursor-pointer"
+              oninput="useDonatedZapSpell(this)"
+              aria-label="Use donated lightning spell"
+            />
+            <label for="useDonatedLightning" class="text-base font-medium cursor-pointer" data-i18n="useDonatedLightning">
+              Use donated lightning spell
+            </label>
+          </div>
+        </div>
+
+        <!-- Spell Cards -->
+        <div class="flex flex-wrap justify-center gap-4 mt-4">
+
+          <!-- Lightning Spell (own) -->
+          <div
+            class="offense spell card-custom card-custom__object text-center flex-shrink-0 w-36"
+            data-id="lightning_spell"
+            data-donated="false"
+            aria-label="Lightning Spell card"
+          >
+            <h5 class="text-sm font-semibold text-slate-200 mb-2" data-i18n="lightningSpell">Lightning Spell</h5>
+            <div class="object-container mx-auto">
+              <img class="image object-container__img" alt="Lightning Spell" />
+              <div class="level overlay overlay--bottom-left overlay__number"></div>
+            </div>
+            <div class="mt-3">
+              <input
+                type="range"
+                class="slider slider--theme"
+                oninput="updateOffense(this)"
+                aria-label="Lightning Spell level slider"
+              />
+            </div>
+          </div>
+
+          <!-- Lightning Spell (donated) — hidden by default -->
+          <div
+            class="offense spell card-custom card-custom__object text-center flex-shrink-0 w-44 hidden"
+            data-id="lightning_spell"
+            data-donated="true"
+            aria-label="Donated Lightning Spell card"
+          >
+            <h5 class="text-sm font-semibold text-slate-200 mb-2" data-i18n="lightningSpellDonated">Lightning Spell (Donated)</h5>
+            <div class="object-container mx-auto">
+              <img class="image object-container__img" alt="Donated Lightning Spell" />
+              <div class="level overlay overlay--bottom-left overlay__number"></div>
+              <div class="overlay overlay--top-left overlay__img">
+                <img src="/images/other/donate.webp" alt="Donated" />
+              </div>
+            </div>
+            <div class="mt-3">
+              <input
+                type="range"
+                class="slider slider--theme"
+                oninput="updateOffense(this)"
+                aria-label="Donated Lightning Spell level slider"
+              />
+            </div>
+            <!-- Donate count -->
+            <div class="donate-count mt-3">
+              <label for="donateCount" class="block text-xs text-slate-300 mb-1" data-i18n="donateCountLabel">
+                Number of spell in clan castle:
+              </label>
+              <input
+                type="number"
+                min="0"
+                max="3"
+                value="0"
+                id="donateCount"
+                class="w-20 mx-auto block bg-coc-dark border border-coc-border text-slate-200 rounded px-2 py-1 text-sm text-center focus:outline-none focus:ring-2 focus:ring-coc-blue"
+                oninput="updateDonatedCount(this)"
+                aria-label="Number of donated lightning spells (0 to 3)"
+              />
+              <div id="inputWarning" class="hidden mt-2">
+                <span class="status-container__text status-container__text--fail text-xs" data-i18n="inputWarning">
+                  Input must be a number between 0 and 3!
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Earthquake Spell -->
+          <div
+            class="offense spell card-custom card-custom__object text-center flex-shrink-0 w-36"
+            data-id="earthquake_spell"
+            data-donated="false"
+            aria-label="Earthquake Spell card"
+          >
+            <h5 class="text-sm font-semibold text-slate-200 mb-2" data-i18n="earthquakeSpell">Earthquake Spell</h5>
+            <div class="object-container mx-auto">
+              <img class="image object-container__img" alt="Earthquake Spell" />
+              <div class="level overlay overlay--bottom-left overlay__number"></div>
+            </div>
+            <div class="mt-3">
+              <input
+                type="range"
+                class="slider slider--theme"
+                oninput="updateOffense(this)"
+                aria-label="Earthquake Spell level slider"
+              />
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <hr class="border-coc-border my-6" />
+
+      <!-- HERO EQUIPMENT -->
+      <div class="mb-6">
+        <h3 class="text-center text-xl font-semibold text-coc-blue mb-4" data-i18n="heroEquipment">Hero Equipment</h3>
+
+        <!-- Equipment Settings -->
+        <div class="mb-4">
+          <h4 class="font-semibold text-slate-300 mb-2" data-i18n="setting">Setting:</h4>
+          <div class="flex flex-wrap gap-2 mb-3">
+            <button
+              type="button"
+              value="max"
+              onclick="setAllEquipmentsLevel(this)"
+              class="bg-slate-700 hover:bg-slate-600 text-slate-200 border border-slate-500 rounded-md px-3 py-1.5 text-sm font-medium transition-colors"
+              aria-label="Set all equipments to max level"
+            >
+              <span data-i18n="setAllEquipmentsMax">Set All Equipments to Max Level</span>
+            </button>
+            <button
+              type="button"
+              value="min"
+              onclick="setAllEquipmentsLevel(this)"
+              class="bg-slate-700 hover:bg-slate-600 text-slate-200 border border-slate-500 rounded-md px-3 py-1.5 text-sm font-medium transition-colors"
+              aria-label="Set all equipments to min level"
+            >
+              <span data-i18n="setAllEquipmentsMin">Set All Equipments to Min Level</span>
+            </button>
+          </div>
+          <!-- Earthquake Order -->
+          <div class="flex items-center flex-wrap gap-3">
+            <label for="earthquakeOrder" class="text-base font-medium" data-i18n="earthquakeOrder">Earthquake order:</label>
+            <select
+              id="earthquakeOrder"
+              class="bg-coc-dark border border-coc-border text-slate-200 rounded-md px-3 py-1.5 text-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-coc-blue"
+              aria-label="Earthquake order selector"
+              onchange="updateEQOrder(this)"
+            >
+              <option value="earthquake_spell" data-i18n-option="eqSpellFirst">Earthquake Spell first</option>
+              <option value="earthquake_boots" data-i18n-option="eqBootsFirst">Earthquake Boots first</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Equipment Cards -->
+        <div class="flex flex-wrap justify-center gap-4 mt-4">
+
+          <!-- Earthquake Boots -->
+          <div
+            class="offense equipment card-custom card-custom__object text-center flex-shrink-0 w-36"
+            data-id="earthquake_boots"
+            aria-label="Earthquake Boots card"
+          >
+            <h5 class="text-sm font-semibold text-slate-200 mb-2" data-i18n="earthquakeBoots">Earthquake Boots</h5>
+            <div class="object-container mx-auto">
+              <img class="image object-container__img" alt="Earthquake Boots" />
+              <div class="level overlay overlay--bottom-left overlay__number"></div>
+            </div>
+            <div class="mt-3">
+              <input
+                type="range"
+                class="slider slider--theme"
+                oninput="updateOffense(this)"
+                aria-label="Earthquake Boots level slider"
+              />
+            </div>
+          </div>
+
+          <!-- Spiky Ball (epic) -->
+          <div
+            class="offense equipment card-custom card-custom__object text-center flex-shrink-0 w-36"
+            data-id="spiky_ball"
+            aria-label="Spiky Ball card"
+          >
+            <h5 class="text-sm font-semibold text-purple-400 mb-2" data-i18n="spikyBall">Spiky Ball</h5>
+            <div class="object-container object-container--epic mx-auto">
+              <img class="image object-container__img" alt="Spiky Ball" />
+              <div class="level overlay overlay--bottom-left overlay__number"></div>
+            </div>
+            <div class="mt-3">
+              <input
+                type="range"
+                class="slider slider--theme"
+                oninput="updateOffense(this)"
+                aria-label="Spiky Ball level slider"
+              />
+            </div>
+          </div>
+
+          <!-- Giant Arrow -->
+          <div
+            class="offense equipment card-custom card-custom__object text-center flex-shrink-0 w-36"
+            data-id="giant_arrow"
+            aria-label="Giant Arrow card"
+          >
+            <h5 class="text-sm font-semibold text-slate-200 mb-2" data-i18n="giantArrow">Giant Arrow</h5>
+            <div class="object-container mx-auto">
+              <img class="image object-container__img" alt="Giant Arrow" />
+              <div class="level overlay overlay--bottom-left overlay__number"></div>
+            </div>
+            <div class="mt-3">
+              <input
+                type="range"
+                class="slider slider--theme"
+                oninput="updateOffense(this)"
+                aria-label="Giant Arrow level slider"
+              />
+            </div>
+          </div>
+
+          <!-- Fireball (epic) -->
+          <div
+            class="offense equipment card-custom card-custom__object text-center flex-shrink-0 w-36"
+            data-id="fireball"
+            aria-label="Fireball card"
+          >
+            <h5 class="text-sm font-semibold text-purple-400 mb-2" data-i18n="fireball">Fireball</h5>
+            <div class="object-container object-container--epic mx-auto">
+              <img class="image object-container__img" alt="Fireball" />
+              <div class="level overlay overlay--bottom-left overlay__number"></div>
+            </div>
+            <div class="mt-3">
+              <input
+                type="range"
+                class="slider slider--theme"
+                oninput="updateOffense(this)"
+                aria-label="Fireball level slider"
+              />
+            </div>
+          </div>
+
+          <!-- Seeking Shield -->
+          <div
+            class="offense equipment card-custom card-custom__object text-center flex-shrink-0 w-36"
+            data-id="seeking_shield"
+            aria-label="Seeking Shield card"
+          >
+            <h5 class="text-sm font-semibold text-slate-200 mb-2" data-i18n="seekingShield">Seeking Shield</h5>
+            <div class="object-container mx-auto">
+              <img class="image object-container__img" alt="Seeking Shield" />
+              <div class="level overlay overlay--bottom-left overlay__number"></div>
+            </div>
+            <div class="mt-3">
+              <input
+                type="range"
+                class="slider slider--theme"
+                oninput="updateOffense(this)"
+                aria-label="Seeking Shield level slider"
+              />
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <hr class="border-coc-border my-6" />
+
+      <!-- INSTRUCTIONS (Collapsible) -->
+      <div>
+        <div class="flex items-center gap-4 mb-2">
+          <h3 class="text-xl font-semibold text-slate-200" data-i18n="instruction">Instruction</h3>
+          <button
+            type="button"
+            id="instructionToggleBtn"
+            class="bg-slate-700 hover:bg-slate-600 text-slate-200 border border-slate-500 rounded-md px-3 py-1.5 text-sm font-medium transition-colors"
+            aria-expanded="false"
+            aria-controls="instructionContent"
+            onclick="toggleInstruction(this)"
+          >
+            <span data-i18n="show">Show</span>
+          </button>
+        </div>
+
+        <div id="instructionContent" class="hidden mt-4 text-slate-300 text-sm leading-relaxed">
+          <h4 class="text-base font-bold underline mb-3" data-i18n="howToUse">How to use:</h4>
+          <ul class="list-disc list-inside space-y-3 ml-2">
+            <li>
+              <span class="font-bold" data-i18n="step1Title">Step 1: Select Spell Level</span>
+              <ul class="list-disc list-inside ml-4 mt-1 space-y-1">
+                <li data-i18n="step1Desc">Choose the appropriate spell level based on your needs.</li>
+                <li>
+                  <span data-i18n="step1DonatedDesc">You can also toggle the use of donated Lightning spells by:</span>
+                  <ul class="list-disc list-inside ml-4 mt-1 space-y-1">
+                    <li data-i18n="step1DonatedItem1">Clicking on "Use donated lightning spell".</li>
+                    <li data-i18n="step1DonatedItem2">Selecting its level.</li>
+                    <li data-i18n="step1DonatedItem3">Choosing the quantity (Must be between 0 and 3).</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <span class="font-bold" data-i18n="step2Title">Step 2: Select Equipment Level</span>
+              <ul class="list-disc list-inside ml-4 mt-1 space-y-1">
+                <li data-i18n="step2Desc">Choose the appropriate equipment level based on your needs.</li>
+                <li data-i18n="step2EQDesc">If you're using both Earthquake Boots and Earthquake spells, you can select which one will be used first. This is important because earthquake type damage deal less damage the more its target get hit by it.</li>
+              </ul>
+            </li>
+            <li>
+              <span class="font-bold" data-i18n="step3Title">Step 3: Calculate</span>
+              <ul class="list-disc list-inside ml-4 mt-1 space-y-1">
+                <li data-i18n="step3Item1">Navigate to the Defense List section to see the results.</li>
+                <li data-i18n="step3Item2">Select the appropriate defense level based on your needs.</li>
+                <li data-i18n="step3Item3">You can also search for a specific defense.</li>
+              </ul>
+            </li>
+          </ul>
+          <h4 class="text-base font-bold underline mt-4 mb-2" data-i18n="noteTitle">Note:</h4>
+          <ul class="list-disc list-inside ml-2 space-y-1">
+            <li data-i18n="noteExclude">To exclude an offense from the calculation, set its level to 0.</li>
+            <li data-i18n="noteSaved">All of your options are saved for future use.</li>
+            <li data-i18n="noteScreen">While the website is supported on small screens like phones, it's recommended to use a larger screen, such as a monitor or tablet, for the best experience.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== DEFENSE LIST SECTION ===== -->
+    <section class="card-custom card-custom__main shadow p-6 mb-6">
+      <h2 class="text-center text-2xl font-bold text-coc-gold mb-4" data-i18n="defenseList">Defense List</h2>
+      <hr class="border-coc-border mb-4" />
+
+      <!-- Search Box -->
+      <div class="relative mb-4">
+        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+          <i class="fa fa-search"></i>
+        </span>
+        <input
+          type="text"
+          id="searchDefense"
+          class="w-full bg-coc-dark border border-coc-border text-slate-200 rounded-md pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-coc-blue placeholder-slate-500"
+          placeholder="Search a defense"
+          data-i18n-placeholder="searchPlaceholder"
+          onkeyup="filterDefenses()"
+          aria-label="Search defense"
+        />
+      </div>
+
+      <!-- Defense Controls -->
+      <div class="flex flex-wrap gap-2 mb-4">
+        <button
+          type="button"
+          value="max"
+          onclick="setAllDefensesLevel(this)"
+          class="bg-slate-700 hover:bg-slate-600 text-slate-200 border border-slate-500 rounded-md px-3 py-1.5 text-sm font-medium transition-colors"
+          aria-label="Set all defenses to max level"
+        >
+          <span data-i18n="setAllDefensesMax">Set All Defenses to Max Level</span>
+        </button>
+        <button
+          type="button"
+          value="min"
+          onclick="setAllDefensesLevel(this)"
+          class="bg-slate-700 hover:bg-slate-600 text-slate-200 border border-slate-500 rounded-md px-3 py-1.5 text-sm font-medium transition-colors"
+          aria-label="Set all defenses to min level"
+        >
+          <span data-i18n="setAllDefensesMin">Set All Defenses to Min Level</span>
+        </button>
+      </div>
+
+      <hr class="border-coc-border mb-4" />
+      <p id="defenseCount" class="text-sm font-semibold text-slate-300 mb-0"></p>
+    </section>
+
+    <!-- Defense Grid -->
+    <section class="mb-6">
+      <div
+        id="defenses"
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
+      ></div>
+
+      <!-- Empty Search Status -->
+      <div
+        id="emptySearchStatus"
+        class="hidden flex-col items-center justify-center py-12 gap-4 text-center"
+      >
+        <img
+          src=""
+          class="status-container__img status-container__img--empty-search"
+          alt="No results found"
+        />
+        <p class="status-container__text text-slate-400 max-w-md" data-i18n="emptySearchMsg">
+          Uh oh! It looks like our Barbarian couldn't find any defenses that match your search. Maybe try broadening your search filter?
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =====================================================
+       FOOTER
+  ===================================================== -->
+  <footer class="bg-coc-card border-t border-coc-border py-8 px-6 text-center mt-auto">
+    <p class="text-slate-300 text-sm mb-1" data-i18n="lastUpdated">Last Updated: 17/11/2025 (November 2025 Update)</p>
+    <p class="text-slate-300 text-sm mb-4" data-i18n="madeBy">Made by Kienlabadao</p>
+    <div class="flex justify-center items-center flex-wrap gap-3">
+      <a
+        href="https://www.reddit.com/user/Kienlabadao/"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 bg-orange-600 hover:bg-orange-500 text-white rounded-md px-4 py-2 text-sm font-medium transition-colors"
+        aria-label="Reddit profile"
+      >
+        <i class="fa-brands fa-reddit-alien"></i> Reddit
+      </a>
+      <a
+        href="https://discord.com/invite/6SDDRw68"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-md px-4 py-2 text-sm font-medium transition-colors"
+        aria-label="Discord server"
+      >
+        <i class="fa-brands fa-discord"></i> Discord
+      </a>
+      <a
+        href="https://github.com/Kienlabadao/COC-Damage-Calculator"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 bg-slate-700 hover:bg-slate-600 text-white rounded-md px-4 py-2 text-sm font-medium transition-colors"
+        aria-label="GitHub source code"
+      >
+        <i class="fa-brands fa-github"></i> Source Code
+      </a>
+      <a
+        href="https://buymeacoffee.com/kienlabadao"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 bg-yellow-500 hover:bg-yellow-400 text-slate-900 rounded-md px-4 py-2 text-sm font-medium transition-colors"
+        aria-label="Buy me a coffee"
+      >
+        ☕ Buy me a coffee
+      </a>
+    </div>
+  </footer>
+
+  <!-- =====================================================
+       SCROLL BUTTONS (fixed)
+  ===================================================== -->
+  <button
+    type="button"
+    id="scrollUpBtn"
+    class="hidden fixed bottom-20 right-5 z-50 bg-coc-blue hover:bg-blue-500 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg transition-colors"
+    onclick="scrollUp()"
+    aria-label="Scroll to top"
+  >
+    <i class="fa-solid fa-arrow-up"></i>
+  </button>
+  <button
+    type="button"
+    id="scrollDownBtn"
+    class="hidden fixed bottom-5 right-5 z-50 bg-coc-blue hover:bg-blue-500 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg transition-colors"
+    onclick="scrollDown()"
+    aria-label="Scroll to bottom"
+  >
+    <i class="fa-solid fa-arrow-down"></i>
+  </button>
+
+
+  <!-- =====================================================
+       SCRIPTS
+  ===================================================== -->
+
+  <!-- i18n Module (inline) -->
+  <script>
+    const translations = {
+      en: {
+        pageTitle: "ZapQuake Calculator",
+        selectOffenseLevel: "Select Offense Level",
+        spell: "Spell",
+        setting: "Setting:",
+        setAllSpellsMax: "Set All Spells to Max Level",
+        setAllSpellsMin: "Set All Spells to Min Level",
+        useDonatedLightning: "Use donated lightning spell",
+        lightningSpell: "Lightning Spell",
+        lightningSpellDonated: "Lightning Spell (Donated)",
+        earthquakeSpell: "Earthquake Spell",
+        donateCountLabel: "Number of spell in clan castle:",
+        inputWarning: "Input must be a number between 0 and 3!",
+        heroEquipment: "Hero Equipment",
+        setAllEquipmentsMax: "Set All Equipments to Max Level",
+        setAllEquipmentsMin: "Set All Equipments to Min Level",
+        earthquakeOrder: "Earthquake order:",
+        eqSpellFirst: "Earthquake Spell first",
+        eqBootsFirst: "Earthquake Boots first",
+        earthquakeBoots: "Earthquake Boots",
+        spikyBall: "Spiky Ball",
+        giantArrow: "Giant Arrow",
+        fireball: "Fireball",
+        seekingShield: "Seeking Shield",
+        instruction: "Instruction",
+        show: "Show",
+        hide: "Hide",
+        howToUse: "How to use:",
+        step1Title: "Step 1: Select Spell Level",
+        step1Desc: "Choose the appropriate spell level based on your needs.",
+        step1DonatedDesc: "You can also toggle the use of donated Lightning spells by:",
+        step1DonatedItem1: 'Clicking on "Use donated lightning spell".',
+        step1DonatedItem2: "Selecting its level.",
+        step1DonatedItem3: "Choosing the quantity (Must be between 0 and 3).",
+        step2Title: "Step 2: Select Equipment Level",
+        step2Desc: "Choose the appropriate equipment level based on your needs.",
+        step2EQDesc: "If you're using both Earthquake Boots and Earthquake spells, you can select which one will be used first. This is important because earthquake type damage deal less damage the more its target get hit by it.",
+        step3Title: "Step 3: Calculate",
+        step3Item1: "Navigate to the Defense List section to see the results.",
+        step3Item2: "Select the appropriate defense level based on your needs.",
+        step3Item3: "You can also search for a specific defense.",
+        noteTitle: "Note:",
+        noteExclude: "To exclude an offense from the calculation, set its level to 0.",
+        noteSaved: "All of your options are saved for future use.",
+        noteScreen: "While the website is supported on small screens like phones, it's recommended to use a larger screen, such as a monitor or tablet, for the best experience.",
+        defenseList: "Defense List",
+        searchPlaceholder: "Search a defense",
+        setAllDefensesMax: "Set All Defenses to Max Level",
+        setAllDefensesMin: "Set All Defenses to Min Level",
+        lastUpdated: "Last Updated: 17/11/2025 (November 2025 Update)",
+        madeBy: "Made by Kienlabadao",
+        scrollUp: "Scroll to top",
+        scrollDown: "Scroll to bottom",
+        language: "Language",
+        emptySearchMsg: "Uh oh! It looks like our Barbarian couldn't find any defenses that match your search. Maybe try broadening your search filter?"
+      },
+      id: {
+        pageTitle: "Kalkulator ZapQuake",
+        selectOffenseLevel: "Pilih Level Serangan",
+        spell: "Mantra",
+        setting: "Pengaturan:",
+        setAllSpellsMax: "Atur Semua Mantra ke Level Maks",
+        setAllSpellsMin: "Atur Semua Mantra ke Level Min",
+        useDonatedLightning: "Gunakan mantra petir donasi",
+        lightningSpell: "Mantra Petir",
+        lightningSpellDonated: "Mantra Petir (Donasi)",
+        earthquakeSpell: "Mantra Gempa",
+        donateCountLabel: "Jumlah mantra di clan castle:",
+        inputWarning: "Input harus angka antara 0 dan 3!",
+        heroEquipment: "Perlengkapan Hero",
+        setAllEquipmentsMax: "Atur Semua Perlengkapan ke Level Maks",
+        setAllEquipmentsMin: "Atur Semua Perlengkapan ke Level Min",
+        earthquakeOrder: "Urutan Gempa:",
+        eqSpellFirst: "Mantra Gempa lebih dulu",
+        eqBootsFirst: "Sepatu Gempa lebih dulu",
+        earthquakeBoots: "Sepatu Gempa",
+        spikyBall: "Bola Berduri",
+        giantArrow: "Panah Raksasa",
+        fireball: "Bola Api",
+        seekingShield: "Perisai Pencari",
+        instruction: "Instruksi",
+        show: "Tampilkan",
+        hide: "Sembunyikan",
+        howToUse: "Cara penggunaan:",
+        step1Title: "Langkah 1: Pilih Level Mantra",
+        step1Desc: "Pilih level mantra yang sesuai dengan kebutuhan Anda.",
+        step1DonatedDesc: "Anda juga bisa menggunakan mantra petir donasi dengan cara:",
+        step1DonatedItem1: 'Klik "Gunakan mantra petir donasi".',
+        step1DonatedItem2: "Pilih levelnya.",
+        step1DonatedItem3: "Pilih jumlahnya (Harus antara 0 dan 3).",
+        step2Title: "Langkah 2: Pilih Level Perlengkapan",
+        step2Desc: "Pilih level perlengkapan yang sesuai dengan kebutuhan Anda.",
+        step2EQDesc: "Jika menggunakan Sepatu Gempa dan mantra gempa, Anda bisa memilih mana yang digunakan lebih dulu. Ini penting karena damage gempa berkurang semakin sering target terkena damage gempa.",
+        step3Title: "Langkah 3: Hitung",
+        step3Item1: "Buka bagian Daftar Pertahanan untuk melihat hasilnya.",
+        step3Item2: "Pilih level pertahanan yang sesuai.",
+        step3Item3: "Anda juga bisa mencari pertahanan tertentu.",
+        noteTitle: "Catatan:",
+        noteExclude: "Untuk mengecualikan serangan dari kalkulasi, atur levelnya ke 0.",
+        noteSaved: "Semua pilihan Anda tersimpan untuk penggunaan berikutnya.",
+        noteScreen: "Meskipun website ini didukung di layar kecil seperti ponsel, disarankan menggunakan layar lebih besar seperti monitor atau tablet untuk pengalaman terbaik.",
+        defenseList: "Daftar Pertahanan",
+        searchPlaceholder: "Cari pertahanan",
+        setAllDefensesMax: "Atur Semua Pertahanan ke Level Maks",
+        setAllDefensesMin: "Atur Semua Pertahanan ke Level Min",
+        lastUpdated: "Terakhir Diperbarui: 17/11/2025 (Update November 2025)",
+        madeBy: "Dibuat oleh Kienlabadao",
+        scrollUp: "Gulir ke atas",
+        scrollDown: "Gulir ke bawah",
+        language: "Bahasa",
+        emptySearchMsg: "Aduh! Sepertinya Barbarian kita tidak menemukan pertahanan yang cocok. Coba perluas filter pencarianmu?"
+      }
+    };
+
+    const i18n = {
+      currentLang: 'en',
+      translations: translations,
+
+      t(key) {
+        return (this.translations[this.currentLang] && this.translations[this.currentLang][key])
+          ? this.translations[this.currentLang][key]
+          : key;
+      },
+
+      setLang(lang) {
+        if (!this.translations[lang]) return;
+        this.currentLang = lang;
+        try {
+          localStorage.setItem('lang', lang);
+        } catch(e) {}
+
+        // Update language select
+        const sel = document.getElementById('languageSelect');
+        if (sel) sel.value = lang;
+
+        // Update html lang attribute
+        document.documentElement.lang = lang;
+
+        // Update page title
+        document.title = this.t('pageTitle') + ' | COC Damage Calculator';
+
+        // Update all data-i18n elements
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+          const key = el.getAttribute('data-i18n');
+          el.textContent = this.t(key);
+        });
+
+        // Update placeholders
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+          const key = el.getAttribute('data-i18n-placeholder');
+          el.placeholder = this.t(key);
+        });
+
+        // Update aria-labels from data-i18n-aria
+        document.querySelectorAll('[data-i18n-aria]').forEach(el => {
+          const key = el.getAttribute('data-i18n-aria');
+          el.setAttribute('aria-label', this.t(key));
+        });
+
+        // Update select options with data-i18n-option
+        document.querySelectorAll('[data-i18n-option]').forEach(el => {
+          const key = el.getAttribute('data-i18n-option');
+          el.textContent = this.t(key);
+        });
+
+        // Update instruction toggle button text based on current state
+        const instrBtn = document.getElementById('instructionToggleBtn');
+        if (instrBtn) {
+          const instrContent = document.getElementById('instructionContent');
+          const isVisible = instrContent && !instrContent.classList.contains('hidden');
+          const span = instrBtn.querySelector('[data-i18n]');
+          if (span) {
+            span.textContent = isVisible ? this.t('hide') : this.t('show');
+          }
+        }
+      },
+
+      init() {
+        let savedLang = 'en';
+        try {
+          savedLang = localStorage.getItem('lang') || 'en';
+        } catch(e) {}
+        if (!this.translations[savedLang]) savedLang = 'en';
+        this.setLang(savedLang);
+      }
+    };
+  </script>
+
+  <!-- JS Backend: Utility files -->
+  <script src="/js/util/localStorageUtils.js"></script>
+  <script src="/js/util/numberUtil.js"></script>
+  <script src="/js/util/htmlUtil.js"></script>
+
+  <!-- HTMLUtil Overrides: must come immediately after htmlUtil.js -->
+  <script>
+    // Override HTMLUtil to use Tailwind's 'hidden' class instead of Bootstrap's 'd-none'
+    HTMLUtil.showDiv = function(div) {
+      if (div) div.classList.remove('hidden');
+    };
+    HTMLUtil.hideDiv = function(div) {
+      if (div) div.classList.add('hidden');
+    };
+    HTMLUtil.isDivHidden = function(div) {
+      return div ? div.classList.contains('hidden') : true;
+    };
+    HTMLUtil.toggleBSCollapse = function(collapseDiv, state) {
+      if (!collapseDiv) return;
+      if (state) {
+        collapseDiv.classList.remove('hidden');
+      } else {
+        collapseDiv.classList.add('hidden');
+      }
+    };
+  </script>
+
+  <script src="/js/util/scrollManager.js"></script>
+  <script src="/js/util/setAllObjectsLevel.js"></script>
+  <script src="/js/util/toggleCollapseBtnText.js"></script>
+
+  <!-- JS Backend: Class files -->
+  <script src="/js/classes/offense/offense.js"></script>
+  <script src="/js/classes/offense/spell.js"></script>
+  <script src="/js/classes/offense/equipment.js"></script>
+  <script src="/js/classes/offense/troop.js"></script>
+  <script src="/js/classes/offense/repair.js"></script>
+  <script src="/js/classes/offense/offenseListManager.js"></script>
+  <script src="/js/classes/modifier/modifier.js"></script>
+  <script src="/js/classes/modifier/modifierListManager.js"></script>
+  <script src="/js/classes/defense/defense.js"></script>
+  <script src="/js/classes/defense/defenseListManager.js"></script>
+  <script src="/js/classes/action/action.js"></script>
+  <script src="/js/classes/action/actionListManager.js"></script>
+  <script src="/js/classes/spell_count/spellCount.js"></script>
+  <script src="/js/classes/spell_count/spellCountListManager.js"></script>
+  <script src="/js/classes/damage_log/damageLog.js"></script>
+  <script src="/js/classes/damage_log/damageLogListManager.js"></script>
+
+  <!-- JS Backend: Zapquake calc files -->
+  <script src="/js/zapquake_calc/calculate.js"></script>
+  <script src="/js/zapquake_calc/htmlUtil.js"></script>
+  <script src="/js/zapquake_calc/searchDefenses.js"></script>
+  <script src="/js/zapquake_calc/setAllObjectsLevel.js"></script>
+  <script src="/js/zapquake_calc/update.js"></script>
+  <script src="/js/zapquake_calc/init.js"></script>
+
+  <!-- MUST BE LAST: triggers the 'init' event -->
+  <script src="/js/util/json.js"></script>
+
+  <!-- Instruction toggle (vanilla JS, no Bootstrap) -->
+  <script>
+    function toggleInstruction(btn) {
+      const content = document.getElementById('instructionContent');
+      if (!content) return;
+      const isHidden = content.classList.contains('hidden');
+      if (isHidden) {
+        content.classList.remove('hidden');
+        btn.setAttribute('aria-expanded', 'true');
+        const span = btn.querySelector('[data-i18n]');
+        if (span) {
+          span.setAttribute('data-i18n', 'hide');
+          span.textContent = i18n.t('hide');
+        }
+      } else {
+        content.classList.add('hidden');
+        btn.setAttribute('aria-expanded', 'false');
+        const span = btn.querySelector('[data-i18n]');
+        if (span) {
+          span.setAttribute('data-i18n', 'show');
+          span.textContent = i18n.t('show');
+        }
+      }
+    }
+
+    // Initialize i18n after DOM is ready
+    document.addEventListener('DOMContentLoaded', function() {
+      i18n.init();
+    });
+  </script>
+
+</body>
+</html>

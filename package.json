@@ -1,0 +1,20 @@
+{
+  "name": "calculator-damage-coc",
+  "version": "1.0.0",
+  "description": "<p align=\"center\">     <img width=\"100\" src=\"https://cocdamagecalculator.netlify.app/images/other/logo.webp\"> </p> <h1 align=\"center\">Clash of Clans - Damage Calculator</h1> <h3 align=\"center\">Your one-stop spot for all damage calculations in Clash of Clans</h3>",
+  "main": "index.js",
+  "scripts": {
+    "build:css": "npx tailwindcss -i ./css/input.css -o ./css/output.css --minify",
+    "watch:css": "npx tailwindcss -i ./css/input.css -o ./css/output.css --watch",
+    "build": "npm run build:css"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "autoprefixer": "^10.5.0",
+    "postcss": "^8.5.10",
+    "tailwindcss": "^3.4.19"
+  }
+}

@@ -1,0 +1,356 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =====================================================
+   Base
+===================================================== */
+html, body {
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  background-color: #0f1117;
+  color: #e2e8f0;
+}
+
+/* =====================================================
+   Bootstrap Compatibility Layer
+===================================================== */
+.d-none  { display: none !important; }
+.d-flex  { display: flex; }
+.d-inline-block { display: inline-block; }
+.d-block { display: block; }
+.flex-wrap { flex-wrap: wrap !important; }
+.align-items-center { align-items: center !important; }
+.justify-content-center { justify-content: center !important; }
+.justify-content-end { justify-content: flex-end !important; }
+.gap-2 { gap: 0.5rem !important; }
+.gap-1 { gap: 0.25rem !important; }
+.ms-3  { margin-left: 0.75rem !important; }
+.me-1  { margin-right: 0.25rem !important; }
+.mt-3  { margin-top: 0.75rem !important; }
+.my-3  { margin-top: 0.75rem !important; margin-bottom: 0.75rem !important; }
+.mb-0  { margin-bottom: 0 !important; }
+.h5    { font-size: 0.9375rem; font-weight: 600; margin: 0 0 0.25rem 0; }
+.fs-5  { font-size: 0.9375rem !important; }
+.fw-bold { font-weight: 700 !important; }
+.text-center { text-align: center !important; }
+.col   { flex: 1 0 0%; min-width: 0; }
+.col-3 { width: 25%; }
+.col-4 { width: 33.333%; }
+.col-9 { width: 75%; }
+.col-8 { width: 66.666%; }
+.col-sm-4 { width: 33.333%; }
+.col-sm-8 { width: 66.666%; }
+.row   { display: flex; flex-wrap: wrap; }
+.row-cols-1 > * { width: 100%; }
+.gy-2  { row-gap: 0.5rem; }
+.gx-1  { column-gap: 0.25rem; }
+.gx-0  { column-gap: 0; }
+.container-fluid { width: 100%; padding: 0 0.5rem; }
+.collapse { display: none; visibility: visible; }
+.collapse.show { display: block; }
+.p-3   { padding: 0.75rem !important; }
+.shadow { box-shadow: 0 4px 24px rgba(0,0,0,0.4) !important; }
+
+/* =====================================================
+   Card system
+===================================================== */
+.card-custom { border-radius: 10px; }
+
+.card-custom__main {
+  background: #1a1d27;
+  border: 1px solid #2a2d3e;
+  color: #e2e8f0;
+  border-radius: 10px;
+}
+
+.card-custom__stat {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid #2a2d3e;
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.card-custom__object {
+  background: #222636;
+  border: 1px solid #2a2d3e;
+  border-radius: 10px;
+  padding: 12px 10px;
+  transition: border-color 0.15s;
+}
+.card-custom__object:hover {
+  border-color: #3a3f5c;
+}
+
+/* =====================================================
+   Object containers (JS-generated)
+===================================================== */
+.object-container {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+}
+.object-container--epic {
+  border: 1.5px solid #a855f7;
+  border-radius: 8px;
+  padding: 2px;
+  background: rgba(168,85,247,0.06);
+}
+.object-container--immune {
+  opacity: 0.35;
+  filter: grayscale(100%);
+}
+.object-container--tall {
+  width: 56px;
+  min-width: 56px;
+  max-width: 56px;
+}
+.object-container--tall .image {
+  width: 48px !important;
+  height: 48px !important;
+  object-fit: contain;
+  display: block;
+}
+.object-container--earthquake {
+  border: 1.5px solid #f59e0b;
+  border-radius: 8px;
+  padding: 2px;
+  background: rgba(245,158,11,0.06);
+}
+.object-container__header {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  display: flex;
+  justify-content: space-between;
+  z-index: 10;
+}
+.object-container__img {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  display: block;
+  min-width: 56px;
+  min-height: 56px;
+}
+
+/* =====================================================
+   Overlays
+===================================================== */
+.overlay { position: absolute; z-index: 10; }
+.overlay--bottom-left { bottom: 2px; left: 2px; }
+.overlay--top-left    { top: 2px; left: 2px; }
+.overlay--top-right   { top: 2px; right: 2px; }
+
+.overlay__number {
+  background: rgba(0,0,0,0.8);
+  color: #e2e8f0;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 1px 4px;
+  border-radius: 4px;
+  min-width: 16px;
+  text-align: center;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+}
+.overlay__number--level-maxed { color: #f59e0b; }
+.overlay__number--spell-count {
+  background: rgba(0,0,0,0.8);
+  color: #f59e0b;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 1px 4px;
+  border-radius: 4px;
+}
+.overlay__number--order {
+  background: rgba(0,0,0,0.8);
+  color: #e2e8f0;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 1px 4px;
+  border-radius: 4px;
+}
+.overlay__img img { width: 16px; height: 16px; }
+.overlay--small .overlay__img img { width: 12px; height: 12px; }
+
+/* =====================================================
+   Images
+===================================================== */
+.image { max-width: 100%; height: auto; display: block; }
+.image--main {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  flex-shrink: 0;
+  border-radius: 6px;
+}
+
+/* =====================================================
+   Offense selector cards (spell & equipment picker)
+===================================================== */
+.offense.card-custom__object {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  width: 120px !important;
+  min-width: 120px !important;
+  max-width: 120px !important;
+  height: 155px !important;
+  padding: 10px 8px 8px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* Card title: single line, truncate if too long */
+.offense.card-custom__object h5 {
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+  font-size: 0.68rem !important;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+  line-height: 1.3;
+  flex-shrink: 0;
+}
+
+/* Image container: fixed, centered, no grow */
+.offense.card-custom__object .object-container {
+  flex-shrink: 0;
+  flex-grow: 0;
+}
+
+/* Slider: always at bottom, full width */
+.offense.card-custom__object .slider {
+  width: 100%;
+  flex-shrink: 0;
+  margin: 0;
+  padding: 0;
+}
+
+/* Donated spell extra content */
+.offense.card-custom__object .donate-count {
+  width: 100%;
+  font-size: 0.65rem;
+}
+
+
+.defense { display: flex; flex-direction: column; }
+.defense .card-custom__main {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* =====================================================
+   Equipment list inside defense cards
+===================================================== */
+.equipment-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 0;
+}
+
+/* =====================================================
+   Status containers
+===================================================== */
+.status-container { display: flex; align-items: center; gap: 10px; padding: 6px 0; }
+.status-container__img { width: 48px; height: 48px; object-fit: contain; flex-shrink: 0; border-radius: 6px; }
+.status-container__text { font-size: 0.8rem; line-height: 1.4; }
+.status-container__text--success { color: #22c55e; font-weight: 600; }
+.status-container__text--fail    { color: #ef4444; font-weight: 600; }
+.status-container__img--empty-search { width: 80px; height: 80px; }
+
+/* =====================================================
+   Slider
+===================================================== */
+.slider {
+  width: 100%;
+  cursor: pointer;
+  accent-color: #5b6af0;
+  height: 4px;
+  margin: 8px 0 4px;
+}
+.slider--theme { accent-color: #5b6af0; }
+
+/* =====================================================
+   Text helpers
+===================================================== */
+.text--hp-full    { color: #22c55e; }
+.text--hp-low     { color: #ef4444; }
+.text--level-maxed { color: #f59e0b; }
+
+/* =====================================================
+   Button compatibility (JS-generated)
+===================================================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 500;
+  border: 1px solid transparent;
+  transition: background 0.15s, border-color 0.15s;
+  text-decoration: none;
+  white-space: nowrap;
+  font-family: 'Inter', sans-serif;
+}
+.btn-secondary {
+  background: #222636;
+  color: #cbd5e1;
+  border-color: #2a2d3e;
+}
+.btn-secondary:hover { background: #2a2d3e; border-color: #3a3f5c; }
+.btn-primary   { background: #5b6af0; color: #fff; border-color: #5b6af0; }
+.btn-primary:hover { background: #4a58e0; }
+.btn-success   { background: #22c55e; color: #fff; border-color: #22c55e; }
+.btn-success:hover { background: #16a34a; }
+
+.show-more-btn {
+  background: #222636;
+  color: #94a3b8;
+  border: 1px solid #2a2d3e;
+  border-radius: 6px;
+  padding: 4px 12px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 500;
+  transition: all 0.15s;
+  font-family: 'Inter', sans-serif;
+}
+.show-more-btn:hover { background: #2a2d3e; color: #e2e8f0; }
+
+/* =====================================================
+   Scroll buttons
+===================================================== */
+#scrollUpBtn,
+#scrollDownBtn {
+  display: none !important;
+  align-items: center;
+  justify-content: center;
+}
+#scrollUpBtn[style*="flex"],
+#scrollDownBtn[style*="flex"] {
+  display: flex !important;
+}
+
+/* =====================================================
+   Scrollbar
+===================================================== */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: #0f1117; }
+::-webkit-scrollbar-thumb { background: #2a2d3e; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #5b6af0; }

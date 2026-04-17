@@ -1,61 +1,70 @@
 <p align="center">
-    <img width="100" src="https://cocdamagecalculator.netlify.app/images/other/logo.webp">
+  <img width="80" src="images/offense/equipments/fireball.webp" alt="COC Calculator Logo" />
 </p>
-<h1 align="center">Clash of Clans - Damage Calculator</h1>
-<h3 align="center">Your one-stop spot for all damage calculations in Clash of Clans</h3>
+<h1 align="center">COC Calculator</h1>
+<h3 align="center">ZapQuake Damage Calculator for Clash of Clans</h3>
 
 ## Description
-This is a convenient website focused on calculating damage in Clash of Clans. It has two main features:
-- **Zapquake Calculator:** Calculates how many Lightning and Earthquake spells are needed to destroy specific defenses, just like any zapquake calculator out there. But it comes with two extra features:
-  - The ability to account for hero equipment.
-  - The ability to factor in donated Lightning spells.
-- **Advance Calculator:** For more advanced calculations, featuring:
-  - The ability to select actions such as spells, hero equipment, and troops in any order.
-  - The option to manage those actions by removing or reordering them.
-  - Calculations that show:
-    - How much damage each action inflicts.
-    - The remaining HP of the defense after each action.
-    - The impact of modifiers (e.g., Rage spell, cumulative Earthquake damage).
 
-## Table of Contents
-- [Built With](#built-with)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Roadmap](#roadmap)
-- [Contributing](#contributing)
-- [Credits](#credits)
-- [License](#license)
-  
+A standalone single-page calculator that computes how many Lightning and Earthquake spells are needed to destroy specific defenses in Clash of Clans, with support for hero equipment and donated spells.
+
+**Features:**
+- Select level for Lightning Spell and Earthquake Spell
+- Support for donated Lightning Spells (from Clan Castle)
+- Select level for hero equipment: Earthquake Boots, Spiky Ball, Giant Arrow, Fireball, Seeking Shield, Rocket Backpack
+- Earthquake order selector (spell first vs boots first)
+- Real-time damage calculation across all defenses
+- Search and filter defense list
+- Set all to max/min level buttons
+- Multi-language support (English & Indonesian)
+- State saved automatically via localStorage
+
 ## Built With
-- **Backend**
-  - **JavaScript**
-- **Frontend**
-  - **[SASS](https://sass-lang.com/):** Helps keep large stylesheets well-organized and makes it easy to share design within and across projects.
-  - **[Bootstrap](https://getbootstrap.com/):** Powerful, extensible, and feature-packed frontend toolkit.
+
+- **JavaScript** — all calculation logic
+- **Tailwind CSS v3** — styling via npm build
+- **Inter** — UI font (Google Fonts)
+- **HTML5** — single-page standalone app
 
 ## Installation
-### Prerequisites
-- Just any code editor will work.
 
-### Installation
-- Download the project file and open it in your code editor.
+### Prerequisites
+- [Node.js](https://nodejs.org/) (for Tailwind CSS build)
+- Any code editor or live server
+
+### Setup
+
+```bash
+# Install dependencies
+npm install
+
+# Build CSS (one-time)
+npm run build
+
+# Watch CSS during development
+npm run watch:css
+```
+
+Then open `index.html` via a local server (e.g. VS Code Live Server).
+
+> **Note:** `fetch()` is used to load JSON data, so the file must be served via HTTP — not opened directly as a file.
 
 ## Usage
-Instructions on how to use the website are included in the website, as well as comments throughout the source code.
 
-## Future plan
-- Make demonstration video for each calculators.
-- Add support for more troops in the advance calculator.
-- Add support for hero in the advance calculator.
+1. Set the level of your spells and equipment using the sliders
+2. Optionally enable donated Lightning Spells and set the quantity
+3. Choose the Earthquake order if using both Earthquake Boots and Earthquake Spell
+4. Scroll down to the Defense List to see results in real-time
+5. Use the search box to find a specific defense
 
-I will work on them in the future whenever I have free time. Otherwise, the website is fully functional and ready to use. As always, I will update the data whenever there are new updates or balance changes coming to the game.
-
-## Contributing
-Any contributions to the project are always appreciated! A quick note: I’ve done my best to clean up my code as much as I can. However, since I’m not a senior developer, there may be some parts that are messy and confusing, and I'm sorry for that! If you need help understanding anything, feel free to contact me.
+All settings are saved automatically and restored on next visit.
 
 ## Credits
-- **[Zapquaker](https://zapquaker.netlify.app/)** for inspired me to make this website (and some UI design ideas)
-- **[Clash of Clans Wiki](https://clashofclans.fandom.com/wiki/Clash_of_Clans_Wiki)** for informations, images, and formula.
+
+- **[Kienlabadao](https://github.com/Kienlabadao/COC-Damage-Calculator)** — original project
+- **[Clash of Clans Wiki](https://clashofclans.fandom.com/wiki/Clash_of_Clans_Wiki)** — data, images, and formulas
+- **yusufalvian16** — UI rebuild (Tailwind CSS), multi-language support, Rocket Backpack equipment
 
 ## License
-This project is distributed under the MIT License. See `LICENSE.md` for more information.
+
+MIT License — see `LICENSE.md` for details.

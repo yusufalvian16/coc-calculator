@@ -12,6 +12,7 @@ A standalone single-page calculator that computes how many Lightning and Earthqu
 - Select level for Lightning Spell and Earthquake Spell
 - Support for donated Lightning Spells (from Clan Castle)
 - Select level for hero equipment: Earthquake Boots, Spiky Ball, Giant Arrow, Fireball, Seeking Shield, Rocket Backpack
+- **Giant Arrow deals 2× damage vs Air Defense** (June 2026 update)
 - Earthquake order selector (spell first vs boots first)
 - Real-time damage calculation across all defenses
 - Search and filter defense list
@@ -58,6 +59,13 @@ Then open `index.html` via a local server (e.g. VS Code Live Server).
 5. Use the search box to find a specific defense
 
 All settings are saved automatically and restored on next visit.
+
+## Changelog
+
+### June 2026 Update
+- **Giant Arrow** — Damage nerfed at levels 9 (1200→1100), 12 (1500→1200), 15 (1750→1350), 18 (2000→1500)
+- **Giant Arrow** — Now deals **2× damage** specifically against Air Defense
+- **Rocket Backpack** — Damage nerfed at level 21 (1925→1875), level 27 (2200→2150)
 
 ## Credits
 

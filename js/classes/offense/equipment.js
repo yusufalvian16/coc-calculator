@@ -7,6 +7,13 @@ class Equipment extends Offense {
     constructor(offenseID, currentLevelPos) {
         super(offenseID, "equipment", currentLevelPos);
         this._rarity = this.offenseJSON["rarity"];
+        // Optional: multiplier applied to specific defense targets (e.g. Giant Arrow vs Air Defense)
+        this._targetMultiplier = this.offenseJSON["target_multiplier"] || {};
+    }
+
+    // Get damage multiplier for a specific defense ID (defaults to 1 if no multiplier defined)
+    getTargetMultiplier(targetID) {
+        return this._targetMultiplier[targetID] || 1;
     }
 
     // Calculate base damage for eq damage type equipment
@@ -21,7 +28,8 @@ class Equipment extends Offense {
 
     // Calculate how many damages does this equipment do to defense
     // For eq damage type equipment, also include reduced damage as eq type damage deal less damage the more its target got hit by eq type damage
-    calcDamage(defense) {
+    // Optional targetID: if provided, applies target_multiplier from JSON (e.g. Giant Arrow 2x vs Air Defense)
+    calcDamage(defense, targetID) {
         if (defense instanceof Defense) {
             if (defense.isImmune(this)) {
                 return 0;
@@ -29,10 +37,11 @@ class Equipment extends Offense {
 
             const maxHP = defense.getCurrentMaxHP();
             const eqCount = defense.eqCount;
+            const multiplier = targetID ? this.getTargetMultiplier(targetID) : 1;
 
             switch (this.damageType) {
                 case "direct":
-                    return NumberUtil.round2Places(this.getCurrentDamage());
+                    return NumberUtil.round2Places(this.getCurrentDamage() * multiplier);
                 case "earthquake":
                     return NumberUtil.round2Places(this.calcBaseEQDamage(maxHP) * (1 / (2 * eqCount + 1)));            
             }  
@@ -43,6 +52,7 @@ class Equipment extends Offense {
  
     // Calculate and update defense remaining HP after getting hit by equipment
     // Also increase building eq count if equipment deal eq type damage
+    // Passes defense.defenseID to calcDamage() so target_multiplier can be applied
     calcRemainingHP(defense) {
         if (defense instanceof Defense) {
             if (defense.isImmune(this)) {
@@ -50,12 +60,13 @@ class Equipment extends Offense {
             }
 
             const hp = defense.remainingHP;
+            const targetID = defense.defenseID;
             switch (this.damageType) {
                 case "direct":
-                    defense.remainingHP = NumberUtil.round2Places(hp - this.calcDamage(defense));
+                    defense.remainingHP = NumberUtil.round2Places(hp - this.calcDamage(defense, targetID));
                     return;
                 case "earthquake":                  
-                    defense.remainingHP = NumberUtil.round2Places(hp - this.calcDamage(defense));
+                    defense.remainingHP = NumberUtil.round2Places(hp - this.calcDamage(defense, targetID));
                     defense.eqCount++;
                     return;             
             }  

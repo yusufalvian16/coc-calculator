@@ -114,7 +114,8 @@ class Offense {
             if (this.damageList[newCurrentLevelPos] !== undefined) {
                 this._currentLevelPos = newCurrentLevelPos;
             } else {
-                throw new Error(`Invalid currentLevelPos: ${newCurrentLevelPos}. OffenseID: ${this.offenseID}`);
+                console.warn(`Invalid currentLevelPos: ${newCurrentLevelPos} for OffenseID: ${this.offenseID}. Falling back to max level.`);
+                this._currentLevelPos = this.maxLevelPos;
             }
         } else {
             this._currentLevelPos = this.maxLevelPos;

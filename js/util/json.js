@@ -27,7 +27,7 @@ async function fetchJSON() {
         document.dispatchEvent(initEvent);
     } catch (error) {
         console.error('Error:', error);
-        window.location.href = errorPage; // Redirect to an error page
+        alert("Terjadi kesalahan saat memuat data JSON. Jika Anda membuka file index.html ini secara langsung (klik ganda), browser akan memblokir file JSON karena alasan keamanan (CORS).\n\nSolusi: Gunakan ekstensi 'Live Server' di VS Code, atau jalankan local server untuk membuka website ini agar data dan gambar dapat dimuat dengan sempurna.");
     }
 }
 

@@ -158,9 +158,9 @@ class Defense {
         this._currentLevelPos = newCurrentLevelPos;
         this.resetRemainingHP();
       } else {
-        throw new Error(
-          `Invalid currentLevelPos: ${newCurrentLevelPos}. DefenseID: ${this.defenseID}`
-        );
+        console.warn(`Invalid currentLevelPos: ${newCurrentLevelPos} for DefenseID: ${this.defenseID}. Falling back to max level.`);
+        this._currentLevelPos = this.maxLevelPos;
+        this.resetRemainingHP();
       }
     } else {
       this._currentLevelPos = this.maxLevelPos;

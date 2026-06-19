@@ -126,8 +126,10 @@ class HTMLUtil {
     
     // Remove alls child div from parent div
     static removeAllChilds(div) {
-        while (div.firstChild) {
-            div.removeChild(div.firstChild);
+        if (div.replaceChildren) {
+            div.replaceChildren();
+        } else {
+            div.innerHTML = "";
         }
         return div;
     }

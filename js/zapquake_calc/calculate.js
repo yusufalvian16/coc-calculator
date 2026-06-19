@@ -27,16 +27,27 @@ function calcDefense(defenseDiv) {
         throw new Error(`Invalid defenseID: ${defenseID}`);
     }
 
-    toggleCollapseBtnText(defenseDiv.querySelector(".show-more-btn"), false);
-    HTMLUtil.toggleBSCollapse(defenseDiv.querySelector(`#showMore-${defenseID}`), false);
-
     if (!canEquipmentDestroy(defense)) {
+        const spellCountLists = getSpellCountLists(defense);
+        
+        // Optimize DOM updates by checking if result signature is identical
+        let signature = "IMPOSSIBLE";
+        if (spellCountLists.length > 0) {
+            signature = spellCountLists.map(manager => 
+                manager.spellCountList.map(sc => sc.spell.offenseID + ":" + sc.count).join(",")
+            ).join("|");
+        }
+
+        if (defenseDiv.dataset.lastSignature === signature) {
+            return;
+        }
+        defenseDiv.dataset.lastSignature = signature;
+
         HTMLUtil.showDiv(defenseDiv.querySelector(".spell-div"));
         HTMLUtil.hideDiv(defenseDiv.querySelector(".status-div"));
         const collapseBtn = defenseDiv.querySelector(".collapse-btn");
         HTMLUtil.hideDiv(collapseBtn);
 
-        const spellCountLists = getSpellCountLists(defense);
         if (spellCountLists.length > 0) {
             const spellMainDisplayDiv = HTMLUtil.removeAllChilds(defenseDiv.querySelector(".spell-main-display"));
             const spellDisplayDiv = HTMLUtil.removeAllChilds(defenseDiv.querySelector(".spell-display"));
@@ -60,6 +71,11 @@ function calcDefense(defenseDiv) {
             setImpossibleStatus(defenseDiv);
         }
     } else {
+        if (defenseDiv.dataset.lastSignature === "DESTROYED") {
+            return;
+        }
+        defenseDiv.dataset.lastSignature = "DESTROYED";
+
         setDestroyedStatus(defenseDiv);
     }
 }

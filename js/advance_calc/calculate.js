@@ -14,13 +14,20 @@ function calcDefense(defenseDiv) {
         throw new Error(`Invalid defenseID: ${defenseID}`);
     }
 
+    const damageLogDisplay = defenseDiv.querySelector(".damage-log-display");
+    const damageLogList = getDamageLogList(defense);
+
+    // Optimize DOM updates by checking if result signature is identical
+    const signature = defense.getCurrentMaxHP() + "|" + damageLogList.damageLogList.map(log => log.remainingHP).join(",");
+    if (defenseDiv.dataset.lastSignature === signature) {
+        return;
+    }
+    defenseDiv.dataset.lastSignature = signature;
+
     toggleCollapseBtnText(defenseDiv.querySelector(".show-more-btn"), false);
     HTMLUtil.toggleBSCollapse(defenseDiv.querySelector(`#showMore-${defenseID}`), false);
 
-    // Create damage log list for defense
-    const damageLogDisplay = defenseDiv.querySelector(".damage-log-display");
     HTMLUtil.removeAllChilds(damageLogDisplay);
-    const damageLogList = getDamageLogList(defense);
 
     // Add each damage log into the row of detail section of defense
     let orderCount = 0;

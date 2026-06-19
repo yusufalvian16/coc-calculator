@@ -28,7 +28,7 @@ function updateDefenseLevel(defenseDiv, currentLevelPos) {
     } else {
         HTMLUtil.removeTextMaxedClass(levelNumberSpan);
     }
-    defenseDiv.querySelector(".image--main").src = imagePath;
+    defenseDiv.querySelector(".image--main").src = imagePath + "?v=" + new Date().getTime();
     defenseDiv.querySelector(".hp").textContent = maxHP;
 }
 
